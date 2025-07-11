@@ -1,0 +1,66 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        stylesheets="@../css/employee.css"
+        xmlns="http://javafx.com/javafx/17.0.12"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.eduardo.softrestaurant.controllerFX.EmployeeControllerFX">
+    <top>
+        <VBox spacing="10">
+            <Label style="-fx-font-size: 20;" text="Gestión de empleados" />
+            <HBox spacing="10">
+                <TextField fx:id="firstNameField" promptText="Nombre" />
+                <TextField fx:id="lastNameField" promptText="Apellido" />
+                <TextField fx:id="emailField" promptText="Correo" />
+                <PasswordField fx:id="password_hash" promptText="Contraseña" />
+                <CheckBox fx:id="showPassword" />
+            </HBox>
+            <HBox spacing="10">
+                <TextField fx:id="phoneField" promptText="Teléfono" />
+                <ComboBox fx:id="roleBox" promptText="Rol">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Administrador" />
+                            <String fx:value="Recepcion" />
+                            <String fx:value="Mesero" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <ComboBox fx:id="isActive" promptText="Estatus">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Activo" />
+                            <String fx:value="Inactivo" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button onAction="#addEmployee" styleClass="buttonBlue" text="Agregar" />
+                <Button onAction="#addEmployee" styleClass="buttonYellow" text="Actualizar" />
+                <Button onAction="#deleteEmployee" styleClass="buttonRed" text="Eliminar" />
+            </HBox>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="employeeTableView">
+            <columns>
+                <TableColumn fx:id="idCol" text="Id" />
+                <TableColumn fx:id="firstNameCol" text="Nombre" />
+                <TableColumn fx:id="lastNameCol" text="Apellido" />
+                <TableColumn fx:id="emailCol" text="Correo" />
+                <TableColumn fx:id="phoneCol" text="Teléfono" />
+                <TableColumn fx:id="roleCol" text="Rol" />
+                <TableColumn fx:id="statusCol" text="Estatus" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>
+-->

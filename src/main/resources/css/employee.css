@@ -1,0 +1,17 @@
+.buttonRed {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.buttonBlue {
+    -fx-background-color: #2196f3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.buttonYellow {
+    -fx-background-color: #ffff00;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
