@@ -1,28 +1,29 @@
-/*package com.eduardo.softwarerestaurantdesktop.controllerFX;
+package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
-import com.eduardo.softrestaurant.dao.EmployeeDAO;
-import com.eduardo.softrestaurant.entity.Employee;
-import com.eduardo.softrestaurant.service.EmployeeService;
-import com.eduardo.softrestaurant.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceEmployee;
+import com.eduardo.softwarerestaurantdesktop.dao.EmployeeDAO;
+import com.eduardo.softwarerestaurantdesktop.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.util.Config;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Type;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-@Component
 public class EmployeeControllerFX implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(EmployeeControllerFX.class);
 
     @FXML
     private TextField firstNameField;
@@ -56,9 +57,6 @@ public class EmployeeControllerFX implements Initializable {
     private TableColumn<EmployeeDAO, Boolean> statusCol;
 
     private Long employeeId = null;
-
-    @Autowired
-    private EmployeeService employeeService;
 
     private final ObservableList<EmployeeDAO> employeesList = FXCollections.observableArrayList();
 
@@ -117,10 +115,10 @@ public class EmployeeControllerFX implements Initializable {
 
     private void listEmployees() {
         employeesList.clear();
-        employeesList.addAll(employeeService.getAllEmployees());
+        List<EmployeeDAO> employees = ApiServiceEmployee.apiFetcher();
+        employeesList.addAll(employees);
         employeeTableView.setItems(employeesList);
     }
-
     private void clearFields() {
         firstNameField.clear();
         lastNameField.clear();
@@ -132,7 +130,7 @@ public class EmployeeControllerFX implements Initializable {
     }
 
     public void addEmployee() {
-        Employee newEmployee = new Employee();
+        EmployeeDAO newEmployee = new EmployeeDAO();
 
         String name = firstNameField.getText();
         String lastName = lastNameField.getText();
@@ -173,6 +171,9 @@ public class EmployeeControllerFX implements Initializable {
         newEmployee.setIsActive(isActive.getValue().equals("Activo"));
         newEmployee.setPassword_hash(password);
 
+
+        Gson gson = new Gson();
+        String json = gson.toJson(newEmployee);
         if(employeeId == null) {
             employeeService.saveEmployee(newEmployee);
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Se creo el empleado exitosamente");
@@ -184,9 +185,9 @@ public class EmployeeControllerFX implements Initializable {
         }
         listEmployees();
         clearFields();
-    }
+    }*/
 
-    public void deleteEmployee() {
+    /*public void deleteEmployee() {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmacion");
         confirmAlert.setHeaderText("Estas seguro de eliminar a este empleado?");
@@ -201,6 +202,5 @@ public class EmployeeControllerFX implements Initializable {
         } else {
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Cancelado", null, "Eliminacion cancelada");
         }
-    }
+    }*/
 }
-*/
