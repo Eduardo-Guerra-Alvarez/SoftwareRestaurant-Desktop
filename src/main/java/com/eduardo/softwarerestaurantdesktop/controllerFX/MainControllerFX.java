@@ -47,11 +47,11 @@ public class MainControllerFX implements Initializable {
         }
     }
 
-    /*@FXML
+    @FXML
     private void openEmployee() {
         loadView("employee.fxml");
     }
-
+/*
     @FXML
     private void openOrders() {
         loadView("order.fxml");

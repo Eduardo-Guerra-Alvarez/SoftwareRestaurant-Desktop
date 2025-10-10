@@ -1,28 +1,34 @@
-/*package com.eduardo.softwarerestaurantdesktop.controllerFX;
+package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
-import com.eduardo.softrestaurant.dao.EmployeeDAO;
-import com.eduardo.softrestaurant.entity.Employee;
-import com.eduardo.softrestaurant.service.EmployeeService;
-import com.eduardo.softrestaurant.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceEmployee;
+import com.eduardo.softwarerestaurantdesktop.dao.EmployeeDAO;
+import com.eduardo.softwarerestaurantdesktop.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.util.Config;
+import com.eduardo.softwarerestaurantdesktop.util.LoggerUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-@Component
 public class EmployeeControllerFX implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(EmployeeControllerFX.class);
 
     @FXML
     private TextField firstNameField;
@@ -57,10 +63,8 @@ public class EmployeeControllerFX implements Initializable {
 
     private Long employeeId = null;
 
-    @Autowired
-    private EmployeeService employeeService;
-
     private final ObservableList<EmployeeDAO> employeesList = FXCollections.observableArrayList();
+    private static final Logger logger = LoggerUtil.getLogger();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -117,10 +121,10 @@ public class EmployeeControllerFX implements Initializable {
 
     private void listEmployees() {
         employeesList.clear();
-        employeesList.addAll(employeeService.getAllEmployees());
+        List<EmployeeDAO> employees = ApiServiceEmployee.apiFetcher();
+        employeesList.addAll(employees);
         employeeTableView.setItems(employeesList);
     }
-
     private void clearFields() {
         firstNameField.clear();
         lastNameField.clear();
@@ -131,8 +135,7 @@ public class EmployeeControllerFX implements Initializable {
         employeeId = null;
     }
 
-    public void addEmployee() {
-        Employee newEmployee = new Employee();
+    public void addEmployee() throws IOException, InterruptedException {
 
         String name = firstNameField.getText();
         String lastName = lastNameField.getText();
@@ -140,53 +143,85 @@ public class EmployeeControllerFX implements Initializable {
         String phone = phoneField.getText();
         String password = password_hash.getText();
 
-        if (name == null || name.isEmpty()) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Nombre");
+        boolean valid = validateFilds(name, lastName, email, phone, password);
+
+        if(valid) {
             return;
         }
-        if (lastName == null || lastName.isEmpty()) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Apellido");
-            return;
-        }
-        if (email == null || !email.matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$")) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Correo valido");
-            return;
-        }
-        if (phone == null || !phone.matches("\\d{10}")) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa 10 numeros");
-            return;
-        }
+
         boolean existEmail = employeesList.stream()
-                        .noneMatch(employee -> employee.getEmail().equalsIgnoreCase(email));
+                .anyMatch(employee -> employee.getEmail().equalsIgnoreCase(email));
 
         if(existEmail) {
             AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Correo ya registrado");
+            logger.log(Level.SEVERE, "email already used");
             return;
-            
         }
 
-        newEmployee.setFirstName(name);
-        newEmployee.setLastName(lastName);
-        newEmployee.setEmail(email);
-        newEmployee.setPhone(phone);
-        newEmployee.setRole(roleBox.getValue());
-        newEmployee.setIsActive(isActive.getValue().equals("Activo"));
-        newEmployee.setPassword_hash(password);
+        EmployeeDAO newEmployee = new EmployeeDAO(name,
+                lastName,
+                email,
+                phone,
+                roleBox.getValue(),
+                password,
+                isActive.getValue().equals("Activo")
+                );
 
-        if(employeeId == null) {
-            employeeService.saveEmployee(newEmployee);
-            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Se creo el empleado exitosamente");
-            logger.info("Empleado creado con exito: " + newEmployee.toString());
-        } else {
-            employeeService.updateEmployee(employeeId, newEmployee);
-            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Se actualizo el empleado exitosamente");
-            logger.info("Empleado actualizado con exito: " + newEmployee.toString());
-        }
+        String status = ApiServiceEmployee.postEmployee(newEmployee);
+        AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Se creo el empleado exitosamente");
+        logger.info("Empleado creado con exito: " + status);
         listEmployees();
         clearFields();
     }
 
-    public void deleteEmployee() {
+    public void updateEmployee() throws IOException, InterruptedException {
+        String name = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        String email = emailField.getText();
+        String phone = phoneField.getText();
+        String password = password_hash.getText();
+
+        boolean valid = validateFilds(name, lastName, email, phone, password);
+
+        if(valid) {
+            return;
+        }
+
+        boolean existEmail = employeesList.stream()
+                .anyMatch(employee -> employee.getEmail().equals(email)
+                && !Objects.equals(employee.getId(), employeeId));
+
+        if(existEmail) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Correo ya registrado");
+            logger.log(Level.SEVERE, "email already used");
+            return;
+        }
+
+        EmployeeDAO newEmployee = new EmployeeDAO(
+                employeeId,
+                name,
+                lastName,
+                email,
+                phone,
+                roleBox.getValue(),
+                password,
+                isActive.getValue().equals("Activo")
+        );
+
+        if(employeeId == null) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Error", null, "Empleado no seleccionado");
+            logger.severe("Employee no selected");
+            return;
+        }
+
+        String status = ApiServiceEmployee.putEmployee(employeeId, newEmployee);
+        AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Se actualizo el empleado exitosamente");
+        logger.info("Empleado actualizado con exito " + status);
+        listEmployees();
+        clearFields();
+    }
+
+    public void deleteEmployee() throws IOException, InterruptedException {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmacion");
         confirmAlert.setHeaderText("Estas seguro de eliminar a este empleado?");
@@ -194,13 +229,43 @@ public class EmployeeControllerFX implements Initializable {
 
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK) {
-            employeeService.removeEmployee(employeeId);
+            String status = ApiServiceEmployee.deleteEmployee(employeeId);
             listEmployees();
             employeeId = null;
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Empleado Eliminado");
+            logger.info("Employee added successfully!" + status);
         } else {
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Cancelado", null, "Eliminacion cancelada");
+            logger.severe("Canceled option");
         }
+
+        listEmployees();
+        clearFields();
     }
+
+    private boolean validateFilds(String name, String lastName, String email, String phone, String password) {
+        if (name == null || name.isEmpty()) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Nombre");
+            logger.log(Level.SEVERE, "Name empty");
+            return true;
+        }
+        if (lastName == null || lastName.isEmpty()) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Apellido");
+            logger.log(Level.SEVERE, "Last Name empty");
+            return true;
+        }
+        if (email == null || !email.matches("^[\\w.-]+@[\\w.-]+\\.\\w{2,}$")) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa un Correo valido");
+            logger.log(Level.SEVERE, "Email invalid");
+            return true;
+        }
+        if (phone == null || !phone.matches("\\d{10}")) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "error", null, "Ingresa 10 numeros");
+            logger.log(Level.SEVERE, "phone empty");
+            return true;
+        }
+
+        return false;
+    }
+
 }
-*/
