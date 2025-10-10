@@ -10,6 +10,16 @@ public class EmployeeDAO {
     private String password_hash;
     private Boolean isActive;
 
+    public EmployeeDAO(String firstName, String lastName, String email, String phone, String role, String password_hash, Boolean isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+        this.password_hash = password_hash;
+        this.isActive = isActive;
+    }
+
     public EmployeeDAO(Long id, String firstName, String lastName, String email, String phone, String role, String password_hash, Boolean isActive) {
         this.id = id;
         this.firstName = firstName;
