@@ -1,4 +1,4 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
 <?import javafx.collections.*?>
@@ -6,10 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/employee.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eduardo.softrestaurant.controllerFX.TableRestaurantControllerFX">
+<BorderPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/employee.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.TableRestaurantControllerFX">
     <top>
         <VBox spacing="10">
-            <Label style="-fx-font-size: 20;" text="Gesntión de Mesas" />
+            <Label style="-fx-font-size: 20;" text="Gestión de Mesas" />
             <HBox spacing="10">
                 <TextField fx:id="capacity" promptText="Capacidad" />
                 <ComboBox fx:id="status" promptText="Estado">
@@ -22,7 +22,7 @@
                     </items>
                 </ComboBox>
                 <Button onAction="#addTable" styleClass="buttonBlue" text="Agregar" />
-                <Button onAction="#addTable" styleClass="buttonYellow" text="Editar" />
+                <Button onAction="#editTable" styleClass="buttonYellow" text="Editar" />
                 <Button onAction="#deleteTable" styleClass="buttonRed" text="Eliminar" />
             </HBox>
             <padding>
@@ -40,4 +40,3 @@
         </TableView>
     </center>
 </BorderPane>
--->
