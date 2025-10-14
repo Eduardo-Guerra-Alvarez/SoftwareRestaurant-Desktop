@@ -63,7 +63,7 @@ public class ApiServiceEmployee {
     public static String deleteEmployee(Long id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiURL+"/"+id))
-                .header("Conten-Type", "application/json")
+                .header("Content-Type", "application/json")
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

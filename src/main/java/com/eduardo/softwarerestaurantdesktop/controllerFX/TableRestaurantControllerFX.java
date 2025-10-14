@@ -1,28 +1,25 @@
-/*package com.eduardo.softwarerestaurantdesktop.controllerFX;
+package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
-import com.eduardo.softrestaurant.dao.TableDAO;
-import com.eduardo.softrestaurant.entity.TableRestaurant;
-import com.eduardo.softrestaurant.service.TableRestaurantService;
-import com.eduardo.softrestaurant.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceTable;
+import com.eduardo.softwarerestaurantdesktop.dao.TableDAO;
+import com.eduardo.softwarerestaurantdesktop.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.util.LoggerUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
-
-@Component
 public class TableRestaurantControllerFX implements Initializable {
-    private static final Logger logger = LoggerFactory.getLogger(TableRestaurantControllerFX.class);
+    private static final Logger logger = LoggerUtil.getLogger();
+
     @FXML
     private TextField capacity;
 
@@ -35,11 +32,10 @@ public class TableRestaurantControllerFX implements Initializable {
     private TableColumn<TableDAO, Long> tableIdCol;
     @FXML
     private TableColumn<TableDAO, String> capacityCol;
-    @FXML
-    private TableColumn<TableRestaurant, String> statusCol;
 
-    @Autowired
-    private TableRestaurantService tableRestaurantService;
+    @FXML
+    private TableColumn<TableDAO, String> statusCol;
+
     private final ObservableList<TableDAO> tableList = FXCollections.observableArrayList();
 
     private Long id;
@@ -83,7 +79,7 @@ public class TableRestaurantControllerFX implements Initializable {
     }
     private void listTables() {
         tableList.clear();
-        tableList.addAll(tableRestaurantService.getAllTables());
+        tableList.addAll(ApiServiceTable.apiGetTables());
         tableRestaurantView.setItems(tableList);
     }
 
@@ -92,42 +88,67 @@ public class TableRestaurantControllerFX implements Initializable {
         status.cancelEdit();
     }
 
-    public void addTable() {
-        TableRestaurant tableRestaurant = new TableRestaurant();
-        tableRestaurant.setCapacity(Integer.valueOf(capacity.getText()));
-        tableRestaurant.setStatus(status.getValue());
+    public void addTable() throws IOException, InterruptedException {
+        int getCapacity = Integer.valueOf(capacity.getText());
+        String getStatus = status.getValue();
+        TableDAO tableRestaurant = new TableDAO(
+                getCapacity,
+                getStatus
+        );
 
         if(capacity == null){
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "error", "", "Ingresa la capacidad");
+            logger.severe("Error, capacity null");
+            return;
+        }
+
+        String table = ApiServiceTable.postTable(tableRestaurant);
+        logger.info("Table added successfully. " + table);
+
+        listTables();
+        clearFields();
+    }
+
+    public void editTable() throws IOException, InterruptedException {
+        int getCapacity = Integer.valueOf(capacity.getText());
+        String getStatus = status.getValue();
+        TableDAO tableRestaurant = new TableDAO(
+                getCapacity,
+                getStatus
+        );
+
+        if(capacity == null){
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "error", "", "Ingresa la capacidad");
+            logger.severe("Error, capacity null");
             return;
         }
 
         if(id != null) {
-            tableRestaurantService.updateTable(id, tableRestaurant);
+            String table = ApiServiceTable.putTable(id, tableRestaurant);
+            logger.info("Table updated successfully. " + table);
             id = null;
-        } else {
-            tableRestaurantService.saveTable(tableRestaurant);
         }
 
         listTables();
         clearFields();
     }
 
-    public void deleteTable() {
+    public void deleteTable() throws IOException, InterruptedException {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmacion");
         confirmAlert.setContentText("Estas seguro de eliminar esta Mesa?");
 
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.OK) {
-            tableRestaurantService.deleteTable(id);
+            ApiServiceTable.deleteTable(id);
             listTables();
             id = null;
             clearFields();
-            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Empleado Eliminado");
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Exitoso", null, "Tabla eliminada");
+            logger.info("Table deleted.");
         } else {
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Cancelado", null, "Eliminacion cancelada");
+            logger.warning("Option canceleted, tabled didn't deleted.");
         }
     }
 }
-*/
