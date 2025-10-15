@@ -11,7 +11,8 @@ public class SoftwareRestaurantFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
         Scene scene = new Scene(loader.load());
 
         //scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("css/styles.css")).toExternalForm());
