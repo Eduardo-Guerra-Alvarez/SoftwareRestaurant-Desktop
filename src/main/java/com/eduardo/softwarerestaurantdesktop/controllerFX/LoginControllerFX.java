@@ -1,8 +1,11 @@
-/*package com.eduardo.softwarerestaurantdesktop.controllerFX;
+package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
-import com.eduardo.softrestaurant.entity.Employee;
-import com.eduardo.softrestaurant.service.EmployeeService;
-import com.eduardo.softrestaurant.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.LoginResponse;
+import com.eduardo.softwarerestaurantdesktop.UserSession;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceLogin;
+import com.eduardo.softwarerestaurantdesktop.util.AlertUtil;
+import com.eduardo.softwarerestaurantdesktop.util.LoggerUtil;
+import com.google.gson.Gson;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,19 +17,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
+import java.net.http.HttpResponse;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
-@Component
 public class LoginControllerFX implements Initializable {
 
     @FXML
@@ -34,36 +32,54 @@ public class LoginControllerFX implements Initializable {
     @FXML
     private PasswordField passwordField;
 
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private ApplicationContext context;
-
-    private static final Logger logger = LoggerFactory.getLogger(LoginControllerFX.class);
+    private static final Logger logger = LoggerUtil.getLogger();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-    public void handleLogin(ActionEvent event) throws IOException {
+    public void handleLogin() throws IOException, InterruptedException {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        Optional<Employee> employee = employeeService.getEmployeeByEmail(email);
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        HttpResponse<String> response  = ApiServiceLogin.login(email, password);
 
-        if(employee.isPresent() && encoder.matches(password, employee.get().getPassword_hash())) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-            loader.setControllerFactory(context::getBean); // this is used to communicate with Springboot
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } else {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Empleado no valido", "", "El Correo o Contraseña no coinciden");
+        if(response.statusCode() != 200) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Error", "", "Login failed");
+            logger.severe("Login failed: " + response.body());
+            return;
         }
+
+
+        Map<String, Object> map = new Gson().fromJson(response.body(), Map.class);
+
+        if (map.containsKey("Error")) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Error", "", "User not found");
+            logger.severe("User not found: " + map.get("Error"));
+            return;
+        }
+
+        String getToken = (String) map.get("token");
+        String getEmail = (String) map.get("email");
+        Double getEmployeeId = (Double) map.get("employeeId");
+
+        UserSession.initSession(
+                getEmail,
+                getToken,
+                getEmployeeId.longValue()
+        );
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = new Stage();
+        stage.setTitle("SoftRestaurant - Main");
+        stage.setScene(new Scene(root));
+        stage.show();
+
+        // Close the login window
+        Stage currentStage = (Stage) emailField.getScene().getWindow();
+        currentStage.close();
     }
 }
-*/
