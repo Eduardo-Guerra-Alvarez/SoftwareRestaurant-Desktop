@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+            fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.MenuControllerFX"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@../css/employee.css">
 
-</AnchorPane>
+    <top>
+        <VBox spacing="10">
+            <Label style="-fx-font-size:20;" text="Gestión Menu" />
+            <HBox spacing="10">
+                <TextField fx:id="nameField" promptText="Nombre" />
+                <TextField fx:id="descriptionField" promptText="Descripcion" prefWidth="350" />
+                <TextField fx:id="priceField" promptText="Precio" />
+            </HBox>
+            <HBox spacing="10">
+                <ComboBox fx:id="categoryField" promptText="Categoria">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Comida" />
+                            <String fx:value="Bebida" />
+                            <String fx:value="Postre" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <ComboBox fx:id="isActive" promptText="Estatus" >
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Activo" />
+                            <String fx:value="Inactivo" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button styleClass="buttonBlue" text="Agregar"/>
+                <Button styleClass="buttonYellow" text="Editar"/>
+                <Button styleClass="buttonRed" text="Eliminar"/>
+            </HBox>
+        <padding>
+            <Insets topRightBottomLeft="10" />
+        </padding>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="menuTableView" >
+            <columns>
+                <TableColumn fx:id="idCol" text="Id"/>
+                <TableColumn fx:id="nameCol" text="Nombre"/>
+                <TableColumn fx:id="descriptionCol" text="Descripcion"/>
+                <TableColumn fx:id="priceCol" text="Precio"/>
+                <TableColumn fx:id="categoryCol" text="Categoria"/>
+                <TableColumn fx:id="statusCol" text="Estatus"/>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

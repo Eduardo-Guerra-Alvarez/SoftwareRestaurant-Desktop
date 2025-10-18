@@ -1,0 +1,9 @@
+.label {
+    -fx-font-size: 14px;
+    -fx-text-alignment: center;
+}
+
+.stack-pane:hover {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, gray, 8, 0, 0, 2);
+}
