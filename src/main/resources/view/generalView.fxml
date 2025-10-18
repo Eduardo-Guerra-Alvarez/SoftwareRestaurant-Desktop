@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../css/tables.css"
+            fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.GeneralViewControllerFX"
+            prefHeight="400.0" prefWidth="600.0">
+    <center>
+        <ScrollPane fitToWidth="true" prefHeight="600" prefWidth="800">
+            <FlowPane fx:id="tableContainer" hgap="15" vgap="15">
+                <padding>
+                    <Insets top="20" right="20" left="20" bottom="20" />
+                </padding>
+            </FlowPane>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
