@@ -15,7 +15,6 @@
                 <TextField fx:id="lastNameField" promptText="Apellido" />
                 <TextField fx:id="emailField" promptText="Correo" />
                 <PasswordField fx:id="password_hash" promptText="Contraseña" />
-                <CheckBox fx:id="showPassword" />
             </HBox>
             <HBox spacing="10">
                 <TextField fx:id="phoneField" promptText="Teléfono" />
