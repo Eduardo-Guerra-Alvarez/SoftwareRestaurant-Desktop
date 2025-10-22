@@ -72,7 +72,7 @@ public class MenuDAO {
         this.category = category;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
