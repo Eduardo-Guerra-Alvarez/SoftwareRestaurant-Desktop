@@ -38,9 +38,9 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
-                <Button styleClass="buttonBlue" text="Agregar"/>
-                <Button styleClass="buttonYellow" text="Editar"/>
-                <Button styleClass="buttonRed" text="Eliminar"/>
+                <Button onAction="#addMenu" styleClass="buttonBlue" text="Agregar"/>
+                <Button onAction="#editMenu" styleClass="buttonYellow" text="Editar"/>
+                <Button onAction="#deleteMenu" styleClass="buttonRed" text="Eliminar"/>
             </HBox>
         <padding>
             <Insets topRightBottomLeft="10" />

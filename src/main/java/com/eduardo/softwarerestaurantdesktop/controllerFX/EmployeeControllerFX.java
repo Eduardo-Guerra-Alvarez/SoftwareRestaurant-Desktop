@@ -39,6 +39,7 @@ public class EmployeeControllerFX implements Initializable {
     private PasswordField password_hash;
     @FXML
     private ComboBox<String> isActive;
+
     @FXML
     private TableView<EmployeeDAO> employeeTableView;
     @FXML

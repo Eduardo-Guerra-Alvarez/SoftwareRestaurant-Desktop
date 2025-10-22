@@ -89,7 +89,7 @@ public class TableRestaurantControllerFX implements Initializable {
     }
 
     public void addTable() throws IOException, InterruptedException {
-        int getCapacity = Integer.valueOf(capacity.getText());
+        int getCapacity = Integer.parseInt(capacity.getText());
         String getStatus = status.getValue();
         TableDAO tableRestaurant = new TableDAO(
                 getCapacity,
@@ -110,7 +110,7 @@ public class TableRestaurantControllerFX implements Initializable {
     }
 
     public void editTable() throws IOException, InterruptedException {
-        int getCapacity = Integer.valueOf(capacity.getText());
+        int getCapacity = Integer.parseInt(capacity.getText());
         String getStatus = status.getValue();
         TableDAO tableRestaurant = new TableDAO(
                 getCapacity,
