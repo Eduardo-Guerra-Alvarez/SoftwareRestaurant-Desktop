@@ -48,15 +48,20 @@ public class ApiServiceTable {
         return res.body();
     }
 
-    public static String putTable(Long id, TableDAO tableDAO) throws IOException, InterruptedException {
+    public static TableDAO putTable(Long id, TableDAO tableDAO) {
         String json = gson.toJson(tableDAO);
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(apiURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
-        return res.body();
+
+        try {
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            return gson.fromJson(res.body(), TableDAO.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

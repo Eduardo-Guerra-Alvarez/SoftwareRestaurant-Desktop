@@ -1,19 +1,26 @@
 package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
+import com.eduardo.softwarerestaurantdesktop.UserSession;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrder;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceTable;
+import com.eduardo.softwarerestaurantdesktop.dao.OrderDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.TableDAO;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class GeneralViewControllerFX {
-
 
     @FXML
     private FlowPane tableContainer;
@@ -62,9 +69,37 @@ public class GeneralViewControllerFX {
         stack.setAlignment(Pos.CENTER);
 
         stack.setOnMouseClicked(e -> {
-            System.out.println("clicked table " + table.getId());
+            onTableClicked(table);
         });
 
         return stack;
+    }
+
+    private void onTableClicked(TableDAO tableDAO) {
+        if (tableDAO.getStatus().equals("Disponible")) {
+            createNewOrder(UserSession.getInstance().getEmployeeId(), tableDAO);
+        } else {
+            openOrderWindow();
+        }
+    }
+
+
+    private void createNewOrder(Long employeeId, TableDAO table) {
+        OrderDAO order = ApiServiceOrder.postOrder(employeeId, table.getId());
+        if (order != null) {
+            System.out.println(order);
+            table.setStatus("Ocupado");
+            ApiServiceTable.putTable(table.getId(), table);
+        }
+    }
+
+    private void openOrderWindow() {
+        try {
+            Parent newView = FXMLLoader.load(getClass().getResource("/view/order.fxml"));
+            StackPane mainStackPane = MainControllerFX.getInstance().getCentralContent();
+            mainStackPane.getChildren().setAll(newView);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

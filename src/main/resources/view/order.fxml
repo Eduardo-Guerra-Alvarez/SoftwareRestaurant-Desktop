@@ -1,4 +1,4 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -7,10 +7,15 @@
             fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.OrderControllerFX"
             prefHeight="400.0" prefWidth="600.0">
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true">
-            <GridPane fx:id="gridPane" hgap="10" vgap="10"/>
-        </ScrollPane>
+        <TableView fx:id="OrderTableView">
+            <columns>
+                <TableColumn fx:id="idCol" text="Id" />
+                <TableColumn fx:id="statusCol" text="Estatus" />
+                <TableColumn fx:id="dateCol" text="Fecha" />
+                <TableColumn fx:id="totalCol" text="Total" />
+                <TableColumn fx:id="employeeCol" text="Empleado" />
+            </columns>
+        </TableView>
     </center>
 
 </BorderPane>
--->

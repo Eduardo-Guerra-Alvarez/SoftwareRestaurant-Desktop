@@ -15,17 +15,30 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainControllerFX implements Initializable {
+
+    private static MainControllerFX instance;
+
     @FXML
     private Label welcome;
+    @FXML
+    private StackPane centralContent;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        instance = this;
         UserSession userSession = UserSession.getInstance();
         welcome.setText("Welcome " + userSession.getEmail());
     }
 
-    @FXML
-    private StackPane centralContent;
+    public static MainControllerFX getInstance() {
+        return instance;
+    }
+
+    public StackPane getCentralContent() {
+        return centralContent;
+    }
 
     private void loadView(String viewFXML) {
         try {
@@ -59,12 +72,12 @@ public class MainControllerFX implements Initializable {
     private void openEmployee() {
         loadView("employee.fxml");
     }
-/*
+
     @FXML
     private void openOrders() {
         loadView("order.fxml");
+
     }
-*/
     @FXML
     private void openTables() {
         loadView("tableRestaurant.fxml");
