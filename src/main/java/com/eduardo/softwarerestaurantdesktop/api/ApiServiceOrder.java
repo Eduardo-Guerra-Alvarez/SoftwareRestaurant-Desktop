@@ -1,11 +1,10 @@
 package com.eduardo.softwarerestaurantdesktop.api;
 
-import com.eduardo.softwarerestaurantdesktop.dao.EmployeeDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.EmployeeTable;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDAO;
-import com.eduardo.softwarerestaurantdesktop.dao.TableDAO;
 import com.eduardo.softwarerestaurantdesktop.util.Config;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -19,7 +18,9 @@ import java.util.List;
 public class ApiServiceOrder {
     private static final String apiURL = Config.get("base.url") + Config.get("orders.endpoint");
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm")
+            .create();
 
     public static List<OrderDAO> getOrders() {
         HttpRequest req = HttpRequest.newBuilder()
@@ -36,6 +37,19 @@ public class ApiServiceOrder {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static OrderDAO getOrderByTableAndStatus(Long tableId, String status) {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(apiURL + "/order/table/" + tableId + "/status/" + status))
+                .header("Accept", "application/json")
+                .GET().build();
+        try {
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            return gson.fromJson(res.body(), OrderDAO.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<OrderDAO>getOrdersByTable(Long tableId) {

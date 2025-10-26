@@ -8,10 +8,10 @@ public class OrderDAO {
     private Long tableRestaurant_number;
     private String employee_name;
     private String status; // pending, in_progress, delivered, canceled
-    private LocalDateTime created_at;
+    private String created_at;
     private Float total;
 
-    public OrderDAO(Long id, Long tableRestaurant_number, String employee_name, String status, LocalDateTime created_at, Float total) {
+    public OrderDAO(Long id, Long tableRestaurant_number, String employee_name, String status, String created_at, Float total) {
         this.id = id;
         this.tableRestaurant_number = tableRestaurant_number;
         this.employee_name = employee_name;
@@ -20,7 +20,7 @@ public class OrderDAO {
         this.total = total;
     }
 
-    public OrderDAO(Long tableRestaurant_number, String employee_name, String status, LocalDateTime created_at, Float total) {
+    public OrderDAO(Long tableRestaurant_number, String employee_name, String status, String created_at, Float total) {
         this.tableRestaurant_number = tableRestaurant_number;
         this.employee_name = employee_name;
         this.status = status;
@@ -60,11 +60,11 @@ public class OrderDAO {
         this.status = status;
     }
 
-    public LocalDateTime getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 

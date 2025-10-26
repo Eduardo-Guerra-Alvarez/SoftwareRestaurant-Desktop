@@ -124,7 +124,7 @@ public class TableRestaurantControllerFX implements Initializable {
         }
 
         if(id != null) {
-            String table = ApiServiceTable.putTable(id, tableRestaurant);
+            TableDAO table = ApiServiceTable.putTable(id, tableRestaurant);
             logger.info("Table updated successfully. " + table);
             id = null;
         }
