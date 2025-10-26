@@ -79,7 +79,7 @@ public class GeneralViewControllerFX {
         if (tableDAO.getStatus().equals("Disponible")) {
             createNewOrder(UserSession.getInstance().getEmployeeId(), tableDAO);
         } else {
-            openOrderWindow();
+            getOrderOpened(tableDAO);
         }
     }
 
@@ -90,13 +90,23 @@ public class GeneralViewControllerFX {
             System.out.println(order);
             table.setStatus("Ocupado");
             ApiServiceTable.putTable(table.getId(), table);
+
+            openOrderWindow(order);
         }
     }
 
-    private void openOrderWindow() {
+    private void getOrderOpened(TableDAO table) {
+        OrderDAO order = ApiServiceOrder.getOrderByTableAndStatus(table.getId(), "OPEN");
+        openOrderWindow(order);
+    }
+
+    private void openOrderWindow(OrderDAO order) {
         try {
-            Parent newView = FXMLLoader.load(getClass().getResource("/view/order.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/orderSelected.fxml"));
+            Parent newView = loader.load();
             StackPane mainStackPane = MainControllerFX.getInstance().getCentralContent();
+            OrderSelectedControllerFX controller = loader.getController();
+            controller.setOrder(order);
             mainStackPane.getChildren().setAll(newView);
         } catch (IOException e) {
             throw new RuntimeException(e);

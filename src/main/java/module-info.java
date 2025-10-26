@@ -5,7 +5,6 @@ module com.eduardo.softwarerestaurantdesktop {
     requires java.logging;
     requires com.google.gson;
     requires javafx.graphics;
-    requires com.eduardo.softwarerestaurantdesktop;
 
     opens com.eduardo.softwarerestaurantdesktop.dao to com.google.gson, javafx.base;
     opens com.eduardo.softwarerestaurantdesktop.controllerFX to javafx.fxml;
