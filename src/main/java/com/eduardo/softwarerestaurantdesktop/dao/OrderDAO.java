@@ -10,6 +10,7 @@ public class OrderDAO {
     private String status; // pending, in_progress, delivered, canceled
     private String created_at;
     private Float total;
+    private List<OrderDetailsDAO> orderDetails;
 
     public OrderDAO(Long id, Long tableRestaurant_number, String employee_name, String status, String created_at, Float total) {
         this.id = id;
@@ -26,6 +27,16 @@ public class OrderDAO {
         this.status = status;
         this.created_at = created_at;
         this.total = total;
+    }
+
+    public OrderDAO(Long id, Long tableRestaurant_number, String employee_name, String status, String created_at, Float total, List<OrderDetailsDAO> orderDetails) {
+        this.id = id;
+        this.tableRestaurant_number = tableRestaurant_number;
+        this.employee_name = employee_name;
+        this.status = status;
+        this.created_at = created_at;
+        this.total = total;
+        this.orderDetails = orderDetails;
     }
 
     public Long getId() {
@@ -74,6 +85,14 @@ public class OrderDAO {
 
     public void setTotal(Float total) {
         this.total = total;
+    }
+
+    public List<OrderDetailsDAO> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetailsDAO> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     @Override
