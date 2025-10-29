@@ -1,5 +1,6 @@
 package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrder;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrderDetail;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDetailsDAO;
@@ -42,6 +43,7 @@ public class OrderSelectedControllerFX implements Initializable {
     private TableColumn<OrderDetailsDAO, Void> actionCol;
 
     private final ObservableList<OrderDetailsDAO> orderDetailsList = FXCollections.observableArrayList();
+    private OrderDAO order;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -50,12 +52,19 @@ public class OrderSelectedControllerFX implements Initializable {
     }
 
     public void setOrder(OrderDAO order) {
+        this.order = order;
         employeeOrder.setText("Empleado: " +  order.getEmployee_name());
         orderNumber.setText("Orden: " +  order.getId());
         dateOrder.setText(order.getCreated_at());
         totalOrder.setText("Total: " + order.getTotal());
         statusOrder.setText(order.getStatus());
         orderDetailsList.setAll(order.getOrderDetails());
+        tableViewOrderDetail.setItems(orderDetailsList);
+    }
+
+    private void setOrderDetails() {
+        orderDetailsList.clear();
+        orderDetailsList.setAll(ApiServiceOrderDetail.getAllOrderDetailsByOrder(this.order.getId()));
         tableViewOrderDetail.setItems(orderDetailsList);
     }
 
@@ -98,5 +107,6 @@ public class OrderSelectedControllerFX implements Initializable {
     private void deleteItem(Long orderDetailId) {
         String status = ApiServiceOrderDetail.deleteOrderDetail(orderDetailId);
         System.out.println(status);
+        setOrderDetails();
     }
 }
