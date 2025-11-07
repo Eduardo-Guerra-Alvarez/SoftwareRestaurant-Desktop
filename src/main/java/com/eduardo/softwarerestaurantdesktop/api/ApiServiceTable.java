@@ -58,6 +58,7 @@ public class ApiServiceTable {
 
         try {
             HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            System.out.println(res.body());
             return gson.fromJson(res.body(), TableDAO.class);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);

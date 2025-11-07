@@ -89,6 +89,7 @@ public class GeneralViewControllerFX {
         if (order != null) {
             System.out.println(order);
             table.setStatus("Ocupado");
+            System.out.println(table);
             ApiServiceTable.putTable(table.getId(), table);
 
             openOrderWindow(order);
