@@ -1,56 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane stylesheets="@../css/employee.css" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.OrderSelectedControllerFX">
-   <top>
-      <BorderPane prefHeight="50.0" prefWidth="200.0" style="-fx-padding: 20;" BorderPane.alignment="CENTER">
-         <right>
-               <Label fx:id="employeeOrder" style="-fx-font-size: 20;" text="Empleado:" textAlignment="JUSTIFY" BorderPane.alignment="CENTER" />
-         </right>
-         <center>
-               <Label fx:id="dateOrder" style="-fx-font-size: 20;" text="Fecha:" BorderPane.alignment="CENTER" />
-         </center>
-         <left>
-               <Label fx:id="orderNumber" style="-fx-font-size: 20;" text="Order:" BorderPane.alignment="CENTER" />
-         </left>
-      </BorderPane>
-   </top>
-    <center>
-        <BorderPane>
-            <top>
-                <HBox>
-                    <padding>
-                        <Insets bottom="10" left="10" />
-                    </padding>
-                    <Button styleClass="buttonBlue" text="Agregar" />
-                </HBox>
-            </top>
-            <center>
-                <TableView fx:id="tableViewOrderDetail">
-                    <columns>
-                        <TableColumn fx:id="idCol" text="Id" />
-                        <TableColumn fx:id="menuCol" text="Nombre" />
-                        <TableColumn fx:id="quantityCol" text="Cantidad" />
-                        <TableColumn fx:id="unitPriceCol" text="Precio unitario" />
-                        <TableColumn fx:id="subtotalCol" text="Subtotal" />
-                        <TableColumn fx:id="actionCol" text="Accion" />
-                    </columns>
-                </TableView>
-            </center>
-        </BorderPane>
-    </center>
-   <bottom>
-       <BorderPane prefHeight="50.0" prefWidth="200" style="-fx-padding: 10;" BorderPane.alignment="CENTER">
-           <right>
-               <Label fx:id="totalOrder" style="-fx-font-size: 15;" text="Total:" BorderPane.alignment="CENTER" />
-           </right>
-           <left>
-               <Label fx:id="statusOrder" style="-fx-font-size: 15;" text="Estatus:" BorderPane.alignment="CENTER" />
-           </left>
-       </BorderPane>
-   </bottom>
-
-</BorderPane>
+<TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.OrderSelectedControllerFX">
+  <tabs>
+    <Tab text="Menu">
+      <content>
+          <BorderPane prefHeight="400.0" prefWidth="600.0">
+              <top>
+                  <VBox>
+                      <padding>
+                          <Insets bottom="20" left="20" top="20" />
+                      </padding>
+                      <ComboBox fx:id="categoryCBox" prefWidth="150.0" BorderPane.alignment="CENTER">
+                          <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="Todos" />
+                                  <String fx:value="Comida" />
+                                  <String fx:value="Bebida" />
+                                  <String fx:value="Postre" />
+                              </FXCollections>
+                          </items>
+                      </ComboBox>
+                  </VBox>
+              </top>
+              <center>
+                  <ScrollPane fitToWidth="true">
+                      <FlowPane fx:id="menuContainer" hgap="15" vgap="15">
+                          <padding>
+                              <Insets bottom="20" left="20" right="20" top="20" />
+                          </padding>
+                      </FlowPane>
+                  </ScrollPane>
+              </center>
+          </BorderPane>
+      </content>
+    </Tab>
+    <Tab text="Detalles Orden">
+      <content>
+          <BorderPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/employee.css">
+              <top>
+                  <BorderPane prefHeight="50.0" prefWidth="200.0" style="-fx-padding: 20;" BorderPane.alignment="CENTER">
+                      <right>
+                          <Label fx:id="employeeOrder" style="-fx-font-size: 20;" text="Empleado:" textAlignment="JUSTIFY" BorderPane.alignment="CENTER" />
+                      </right>
+                      <center>
+                          <Label fx:id="dateOrder" style="-fx-font-size: 20;" text="Fecha:" BorderPane.alignment="CENTER" />
+                      </center>
+                      <left>
+                          <Label fx:id="orderNumber" style="-fx-font-size: 20;" text="Order:" BorderPane.alignment="CENTER" />
+                      </left>
+                  </BorderPane>
+              </top>
+              <center>
+                  <BorderPane>
+                      <top>
+                          <HBox>
+                              <padding>
+                                  <Insets bottom="10" left="10" />
+                              </padding>
+                              <Button onAction="#goToMenu" styleClass="buttonBlue" text="Agregar" />
+                          </HBox>
+                      </top>
+                      <center>
+                          <TableView fx:id="tableViewOrderDetail">
+                              <columns>
+                                  <TableColumn fx:id="idCol" text="Id" />
+                                  <TableColumn fx:id="menuCol" text="Nombre" />
+                                  <TableColumn fx:id="quantityCol" text="Cantidad" />
+                                  <TableColumn fx:id="unitPriceCol" text="Precio unitario" />
+                                  <TableColumn fx:id="subtotalCol" text="Subtotal" />
+                                  <TableColumn fx:id="actionCol" text="Accion" />
+                              </columns>
+                          </TableView>
+                      </center>
+                  </BorderPane>
+              </center>
+              <bottom>
+                  <BorderPane prefHeight="50.0" prefWidth="200" style="-fx-padding: 10;" BorderPane.alignment="CENTER">
+                      <right>
+                          <Label fx:id="totalOrder" style="-fx-font-size: 15;" text="Total:" BorderPane.alignment="CENTER" />
+                      </right>
+                      <left>
+                          <Label fx:id="statusOrder" style="-fx-font-size: 15;" text="Estatus:" BorderPane.alignment="CENTER" />
+                      </left>
+                  </BorderPane>
+              </bottom>
+          </BorderPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>
