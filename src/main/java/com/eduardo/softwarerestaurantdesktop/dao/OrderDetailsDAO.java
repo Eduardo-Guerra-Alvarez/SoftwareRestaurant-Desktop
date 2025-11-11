@@ -6,6 +6,7 @@ public class OrderDetailsDAO {
     private Integer quantity;
     private Float unit_price;
     private Float subtotal;
+    private Long menuId;
 
     public OrderDetailsDAO(Long id, String menu, Integer quantity, Float unit_price, Float subtotal) {
         this.id = id;
@@ -13,6 +14,10 @@ public class OrderDetailsDAO {
         this.quantity = quantity;
         this.unit_price = unit_price;
         this.subtotal = subtotal;
+    }
+
+    public OrderDetailsDAO() {
+
     }
 
     public Long getId() {
@@ -53,6 +58,14 @@ public class OrderDetailsDAO {
 
     public void setSubtotal(Float subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
 
     @Override

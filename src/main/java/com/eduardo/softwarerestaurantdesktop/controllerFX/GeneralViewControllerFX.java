@@ -8,7 +8,6 @@ import com.eduardo.softwarerestaurantdesktop.dao.TableDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
@@ -17,7 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 public class GeneralViewControllerFX {
@@ -89,6 +87,7 @@ public class GeneralViewControllerFX {
         if (order != null) {
             System.out.println(order);
             table.setStatus("Ocupado");
+            System.out.println(table);
             ApiServiceTable.putTable(table.getId(), table);
 
             openOrderWindow(order);

@@ -1,19 +1,29 @@
 package com.eduardo.softwarerestaurantdesktop.controllerFX;
 
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceMenu;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrder;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrderDetail;
+import com.eduardo.softwarerestaurantdesktop.dao.MenuDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDetailsDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class OrderSelectedControllerFX implements Initializable {
@@ -41,14 +51,34 @@ public class OrderSelectedControllerFX implements Initializable {
     private TableColumn<OrderDetailsDAO, Float> subtotalCol;
     @FXML
     private TableColumn<OrderDetailsDAO, Void> actionCol;
+    @FXML
+    private FlowPane menuContainer;
+    @FXML
+    private ComboBox<String> categoryCBox;
 
     private final ObservableList<OrderDetailsDAO> orderDetailsList = FXCollections.observableArrayList();
     private OrderDAO order;
+    private final ObservableList<MenuDAO> menuList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setColumns();
         tableViewOrderDetail.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        getMenuList();
+        filterCategory();
+
+
+    }
+
+    private void filterCategory() {
+        categoryCBox.setValue("Todos");
+
+        loadMenuByCategory("Todos");
+
+        categoryCBox.setOnAction(event -> {
+            String categorySelected = categoryCBox.getValue();
+            loadMenuByCategory(categorySelected);
+        });
     }
 
     public void setOrder(OrderDAO order) {
@@ -108,5 +138,71 @@ public class OrderSelectedControllerFX implements Initializable {
         String status = ApiServiceOrderDetail.deleteOrderDetail(orderDetailId);
         System.out.println(status);
         setOrderDetails();
+    }
+
+    public void goToMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/addOrdersDetails.fxml"));
+            Parent newView = loader.load();
+            StackPane mainStackPane = MainControllerFX.getInstance().getCentralContent();
+            AddOrdersDetails controller = loader.getController();
+            controller.setOrderDetail(order.getId());
+            mainStackPane.getChildren().setAll(newView);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void getMenuList() {
+        menuList.clear();
+        menuList.setAll(ApiServiceMenu.getMenu());
+    }
+
+
+    private void loadMenuByCategory(String category) {
+        menuContainer.getChildren().clear();
+        menuList.stream()
+                .filter(item -> category.equals("Todos") || item.getCategory().equalsIgnoreCase(category))
+                .forEach(item -> menuContainer.getChildren().add(createMenuCard(item)));
+
+
+
+    }
+
+    // Create the form of the table card
+    private VBox createMenuCard(MenuDAO menu) {
+        VBox card = new VBox(10);
+        card.setPadding(new Insets(10));
+        card.setAlignment(Pos.CENTER);
+        card.setPrefSize(120, 160);
+        card.setStyle("""
+                -fx-background-color: white;
+                -fx-background-radius: 12;
+                -fx-border-color: #d3d3d3;
+                -fx-border-radius: 12;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+                """);
+
+        Label lblName = new Label(menu.getName() + "\n" + menu.getPrice());
+        lblName.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        lblName.setWrapText(true);
+
+        Spinner<Integer> spinner = new Spinner<>(0, 10, 0);
+        Button btnAdd = new Button("Agregar");
+        btnAdd.setStyle("""
+            -fx-background-color: #2196F3;
+            -fx-text-fill: white;
+            """);
+
+        btnAdd.setOnAction(click -> {
+            int quantity = spinner.getValue();
+            OrderDetailsDAO orderDetail = new OrderDetailsDAO();
+            orderDetail.setQuantity(quantity);
+            String status = ApiServiceOrderDetail.postOrderDetail(order.getId(), menu.getId(), orderDetail);
+            System.out.println(status);
+            setOrderDetails();
+        });
+        card.getChildren().addAll(lblName, spinner, btnAdd);
+        return card;
     }
 }

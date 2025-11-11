@@ -32,6 +32,22 @@ public class ApiServiceOrderDetail {
         }
     }
 
+    public static String postOrderDetail(Long orderId, Long menuId, OrderDetailsDAO orderDetail) {
+        String json = gson.toJson(orderDetail);
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/order/" + orderId + "/menu/" + menuId))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        try {
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            return res.body();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static String deleteOrderDetail(Long id) {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/" + id))
