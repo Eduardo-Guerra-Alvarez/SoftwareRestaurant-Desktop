@@ -39,6 +39,21 @@ public class ApiServiceOrder {
 
     }
 
+
+    public static OrderDAO getOrderById(Long orderId) {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(apiURL + "/" + orderId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+        try {
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            return gson.fromJson(res.body(), OrderDAO.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static OrderDAO getOrderByTableAndStatus(Long tableId, String status) {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(apiURL + "/order/table/" + tableId + "/status/" + status))

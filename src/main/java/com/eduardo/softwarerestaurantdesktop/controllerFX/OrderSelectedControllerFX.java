@@ -66,8 +66,6 @@ public class OrderSelectedControllerFX implements Initializable {
         tableViewOrderDetail.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         getMenuList();
         filterCategory();
-
-
     }
 
     private void filterCategory() {
@@ -79,6 +77,16 @@ public class OrderSelectedControllerFX implements Initializable {
             String categorySelected = categoryCBox.getValue();
             loadMenuByCategory(categorySelected);
         });
+    }
+
+    public void getOrder() {
+        order = ApiServiceOrder.getOrderById(this.order.getId());employeeOrder.setText("Empleado: " +  order.getEmployee_name());
+        orderNumber.setText("Orden: " +  order.getId());
+        dateOrder.setText(order.getCreated_at());
+        totalOrder.setText("Total: " + order.getTotal());
+        statusOrder.setText(order.getStatus());
+        orderDetailsList.setAll(order.getOrderDetails());
+        tableViewOrderDetail.setItems(orderDetailsList);
     }
 
     public void setOrder(OrderDAO order) {
@@ -116,7 +124,7 @@ public class OrderSelectedControllerFX implements Initializable {
 
                 deleteButton.setOnAction(event -> {
                     OrderDetailsDAO item = getTableView().getItems().get(getIndex());
-                    deleteItem(item.getId());
+                    deleteItem(item.getId(), order.getId());
                 });
             }
 
@@ -134,10 +142,11 @@ public class OrderSelectedControllerFX implements Initializable {
         });
     }
 
-    private void deleteItem(Long orderDetailId) {
-        String status = ApiServiceOrderDetail.deleteOrderDetail(orderDetailId);
+    private void deleteItem(Long orderDetailId, Long orderId) {
+        String status = ApiServiceOrderDetail.deleteOrderDetail(orderDetailId, orderId);
         System.out.println(status);
         setOrderDetails();
+        getOrder();
     }
 
     public void goToMenu() {
@@ -201,6 +210,8 @@ public class OrderSelectedControllerFX implements Initializable {
             String status = ApiServiceOrderDetail.postOrderDetail(order.getId(), menu.getId(), orderDetail);
             System.out.println(status);
             setOrderDetails();
+            getOrder();
+            spinner.getValueFactory().setValue(0);
         });
         card.getChildren().addAll(lblName, spinner, btnAdd);
         return card;

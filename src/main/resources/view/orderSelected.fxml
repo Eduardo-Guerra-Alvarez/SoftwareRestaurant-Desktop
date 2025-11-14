@@ -63,7 +63,6 @@
                               <padding>
                                   <Insets bottom="10" left="10" />
                               </padding>
-                              <Button onAction="#goToMenu" styleClass="buttonBlue" text="Agregar" />
                           </HBox>
                       </top>
                       <center>
