@@ -74,10 +74,7 @@ public class MainControllerFX implements Initializable {
     }
 
     @FXML
-    private void openOrders() {
-        loadView("order.fxml");
-
-    }
+    private void openOrders() { loadView("order.fxml"); }
     @FXML
     private void openTables() {
         loadView("tableRestaurant.fxml");

@@ -99,4 +99,18 @@ public class ApiServiceOrder {
             throw new RuntimeException(e);
         }
     }
+
+    public static OrderDAO closeOrder(Long orderId, Long tableId) {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(apiURL + "/closeOrder/" + orderId + "/table/" + tableId))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+        try {
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+            return gson.fromJson(res.body(), OrderDAO.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -96,7 +96,10 @@ public class GeneralViewControllerFX {
 
     private void getOrderOpened(TableDAO table) {
         OrderDAO order = ApiServiceOrder.getOrderByTableAndStatus(table.getId(), "OPEN");
-        openOrderWindow(order);
+        System.out.println(order);
+        if(order.getStatus().equals("OPEN")) {
+            openOrderWindow(order);
+        }
     }
 
     private void openOrderWindow(OrderDAO order) {

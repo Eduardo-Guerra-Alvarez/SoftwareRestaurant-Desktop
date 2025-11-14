@@ -7,7 +7,7 @@
             fx:controller="com.eduardo.softwarerestaurantdesktop.controllerFX.OrderControllerFX"
             prefHeight="400.0" prefWidth="600.0">
     <center>
-        <TableView fx:id="OrderTableView">
+        <TableView fx:id="orderTableView">
             <columns>
                 <TableColumn fx:id="idCol" text="Id" />
                 <TableColumn fx:id="statusCol" text="Estatus" />

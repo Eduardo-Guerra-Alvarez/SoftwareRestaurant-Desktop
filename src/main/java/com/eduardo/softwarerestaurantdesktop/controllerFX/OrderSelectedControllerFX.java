@@ -3,6 +3,7 @@ package com.eduardo.softwarerestaurantdesktop.controllerFX;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceMenu;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrder;
 import com.eduardo.softwarerestaurantdesktop.api.ApiServiceOrderDetail;
+import com.eduardo.softwarerestaurantdesktop.api.ApiServiceTable;
 import com.eduardo.softwarerestaurantdesktop.dao.MenuDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDAO;
 import com.eduardo.softwarerestaurantdesktop.dao.OrderDetailsDAO;
@@ -23,8 +24,13 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.SimpleFormatter;
 
 public class OrderSelectedControllerFX implements Initializable {
     @FXML
@@ -80,7 +86,7 @@ public class OrderSelectedControllerFX implements Initializable {
     }
 
     public void getOrder() {
-        order = ApiServiceOrder.getOrderById(this.order.getId());employeeOrder.setText("Empleado: " +  order.getEmployee_name());
+        this.order = ApiServiceOrder.getOrderById(this.order.getId());employeeOrder.setText("Empleado: " +  order.getEmployee_name());
         orderNumber.setText("Orden: " +  order.getId());
         dateOrder.setText(order.getCreated_at());
         totalOrder.setText("Total: " + order.getTotal());
@@ -93,7 +99,11 @@ public class OrderSelectedControllerFX implements Initializable {
         this.order = order;
         employeeOrder.setText("Empleado: " +  order.getEmployee_name());
         orderNumber.setText("Orden: " +  order.getId());
-        dateOrder.setText(order.getCreated_at());
+
+        String dateString = order.getCreated_at();
+        LocalDateTime date = LocalDateTime.parse(dateString);
+        String formatter = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        dateOrder.setText(formatter);
         totalOrder.setText("Total: " + order.getTotal());
         statusOrder.setText(order.getStatus());
         orderDetailsList.setAll(order.getOrderDetails());
@@ -215,5 +225,11 @@ public class OrderSelectedControllerFX implements Initializable {
         });
         card.getChildren().addAll(lblName, spinner, btnAdd);
         return card;
+    }
+
+    public void closeOrder() {
+        OrderDAO orderClosed = ApiServiceOrder.closeOrder(this.order.getId(), this.order.getTableRestaurant_number());
+        System.out.println(orderClosed);
+        setOrder(orderClosed);
     }
 }

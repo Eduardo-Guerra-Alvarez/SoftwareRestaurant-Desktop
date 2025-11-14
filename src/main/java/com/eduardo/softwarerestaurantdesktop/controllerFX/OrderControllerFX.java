@@ -26,19 +26,21 @@ public class OrderControllerFX implements Initializable {
     private TableColumn<OrderDAO, String> dateCol;
     @FXML
     private TableColumn<OrderDAO, Float> totalCol;
+    @FXML
     private TableColumn<OrderDAO, String> employeeCol;
 
     private final ObservableList<OrderDAO> ordersList = FXCollections.observableArrayList();
-    private final Long tableId;
-
+    // private final Long tableId;
+    /*
     public OrderControllerFX(Long tableId) {
         this.tableId = tableId;
-    }
+    }*/
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setColumns();
         listOrders();
+        orderTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
     }
 
     private void setColumns() {
@@ -50,7 +52,7 @@ public class OrderControllerFX implements Initializable {
     }
 
     private void listOrders() {
-        List<OrderDAO> orders = ApiServiceOrder.getOrdersByTable(tableId);
+        List<OrderDAO> orders = ApiServiceOrder.getOrders();
         ordersList.setAll(orders);
         orderTableView.setItems(ordersList);
     }
