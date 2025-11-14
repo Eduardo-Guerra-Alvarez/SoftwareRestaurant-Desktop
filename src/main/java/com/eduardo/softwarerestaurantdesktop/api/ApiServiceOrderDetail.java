@@ -48,9 +48,9 @@ public class ApiServiceOrderDetail {
         }
     }
 
-    public static String deleteOrderDetail(Long id) {
+    public static String deleteOrderDetail(Long id, Long orderId) {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/" + id))
+                .uri(URI.create(apiUrl + "/" + id + "/order/" + orderId))
                 .header("Content-Type", "application/json")
                 .DELETE()
                 .build();
